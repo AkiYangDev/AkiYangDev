@@ -1,0 +1,52 @@
+name: Profile checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Check Markdown files
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          import subprocess
+
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
+          errors = []
+          for name in paths:
+              if not name.endswith('.md'):
+                  continue
+              path = Path(name)
+              data = path.read_bytes()
+              try:
+                  text = data.decode('utf-8')
+              except UnicodeDecodeError:
+                  errors.append(f'{name}: invalid UTF-8')
+                  continue
+              if b'\r' in data:
+                  errors.append(f'{name}: use LF line endings')
+              if data and not data.endswith(b'\n'):
+                  errors.append(f'{name}: missing final newline')
+              for number, line in enumerate(text.splitlines(), 1):
+                  if re.match(r'^(<{7}|={7}|>{7})(?: |$)', line):
+                      errors.append(f'{name}:{number}: possible merge conflict marker')
+          readme = Path('README.md')
+          if not readme.is_file() or not readme.read_bytes().strip():
+              errors.append('README.md must exist and contain a profile introduction')
+          if errors:
+              raise SystemExit('\n'.join(errors))
+          print('Profile document checks passed.')

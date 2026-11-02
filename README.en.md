@@ -33,11 +33,12 @@ Lately, most of my work revolves around **SGLang, Ascend 910C, and DeepSeek**:
 
 Added dynamic expert load balancing on Ascend to SGLang, connecting valid-route statistics, expert-weight migration, and bounded temporary memory.
 
+Follow-up: [SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) · Open
+
 ## 🔧 Selected pull requests
 
 | Area | Change | PR |
 | --- | --- | --- |
-| Expert load balancing | Isolate draft statistics and reuse compatible TP groups | [SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) |
 | DeepSeek-V4 memory | Bound decode SWA storage by request slots | [SGLang #47740](https://github.com/sgl-project/sglang/pull/47740) |
 | Numerical precision | Fix Softplus accuracy in GDN gating and decode | [sgl-kernel-npu #933](https://github.com/sgl-project/sgl-kernel-npu/pull/933) |
 | Sparse attention | Exclude padded lanes from non-power-of-two TopK reduction | [sgl-kernel-npu #935](https://github.com/sgl-project/sgl-kernel-npu/pull/935) |
@@ -46,8 +47,6 @@ Added dynamic expert load balancing on Ascend to SGLang, connecting valid-route 
 
 <sub>These PRs were Open when checked on 2026-11-02. Follow each PR for its latest status.</sub>
 
-
-As of **2026-11-02**: **30 upstream PRs — 1 merged, 28 open, 1 closed without merging**, including the earlier EPLB submissions listed below.
 
 <details>
 <summary>📦 More sglang contributions (12 PRs)</summary>
@@ -78,16 +77,6 @@ As of **2026-11-02**: **30 upstream PRs — 1 merged, 28 open, 1 closed without 
 - [#925 · handle cache-location windows larger than 16 tokens](https://github.com/sgl-project/sgl-kernel-npu/pull/925) · Open
 - [#924 · handle fully masked leading tiles in argmax probability](https://github.com/sgl-project/sgl-kernel-npu/pull/924) · Open
 - [#922 · preserve arch22 accumulation order across batch sizes](https://github.com/sgl-project/sgl-kernel-npu/pull/922) · Open
-
-</details>
-
-<details>
-<summary>🗂️ Earlier EPLB submissions (2 PRs)</summary>
-
-- [SGLang #47266](https://github.com/sgl-project/sglang/pull/47266) · Open
-- [SGLang #46233](https://github.com/sgl-project/sglang/pull/46233) · Closed without merging
-
-The merged Ascend dynamic EPLB implementation is [#47574](https://github.com/sgl-project/sglang/pull/47574), featured above.
 
 </details>
 

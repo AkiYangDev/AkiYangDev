@@ -33,11 +33,12 @@
 
 为 SGLang 接入 Ascend 动态专家负载均衡，打通有效路由统计、专家权重迁移与临时显存控制。
 
+后续改进：[SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) · Open
+
 ## 🔧 精选 PR
 
 | 方向 | 改动 | PR |
 | --- | --- | --- |
-| 专家负载均衡 | 隔离 draft 统计，复用兼容的 TP 通信组 | [SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) |
 | DeepSeek-V4 显存 | 按请求槽位约束 decode SWA 存储 | [SGLang #47740](https://github.com/sgl-project/sglang/pull/47740) |
 | 算子数值精度 | 修复 GDN gating / decode 的 Softplus 精度 | [sgl-kernel-npu #933](https://github.com/sgl-project/sgl-kernel-npu/pull/933) |
 | 稀疏注意力 | 修复非 2 的幂 TopK 下的 padding 归约问题 | [sgl-kernel-npu #935](https://github.com/sgl-project/sgl-kernel-npu/pull/935) |
@@ -46,8 +47,6 @@
 
 <sub>上表 PR 在 2026-11-02 核对时均为 Open，最新进度见各 PR。</sub>
 
-
-截至 **2026-11-02**，共提交 **30 个上游 PR：1 个已合入、28 个 Open、1 个关闭未合入**，包含下方列出的早期 EPLB 提交记录。
 
 <details>
 <summary>📦 更多 sglang 贡献 (12 PRs)</summary>
@@ -78,16 +77,6 @@
 - [#925 · 处理大于 16 token 的 cache-location 窗口](https://github.com/sgl-project/sgl-kernel-npu/pull/925) · Open
 - [#924 · 处理 argmax probability 中前置 tile 全部被屏蔽的情况](https://github.com/sgl-project/sgl-kernel-npu/pull/924) · Open
 - [#922 · 保持 arch22 compressor 在不同 batch 下的累加顺序](https://github.com/sgl-project/sgl-kernel-npu/pull/922) · Open
-
-</details>
-
-<details>
-<summary>🗂️ 早期 EPLB 提交记录（2 个 PR）</summary>
-
-- [SGLang #47266](https://github.com/sgl-project/sglang/pull/47266) · Open
-- [SGLang #46233](https://github.com/sgl-project/sglang/pull/46233) · 已关闭，未合入
-
-最终合入的 Ascend 动态 EPLB 实现在上方的 [#47574](https://github.com/sgl-project/sglang/pull/47574)。
 
 </details>
 

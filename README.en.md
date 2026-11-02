@@ -2,7 +2,7 @@
   <img src="assets/hello.svg" width="100%" alt="Hi, I'm Aki! Welcome to my little inference lab." />
 </p>
 
-<p align="center"><a href="README.md">简体中文</a> · <b>English</b></p>
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
   <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 Engineering notes (Chinese)</a> &nbsp; · &nbsp;
@@ -33,7 +33,7 @@ Lately, most of my work revolves around **SGLang, Ascend 910C, and DeepSeek**:
 
 Added dynamic expert load balancing on Ascend to SGLang, connecting valid-route statistics, expert-weight migration, and bounded temporary memory.
 
-## 🔧 Recent pull requests
+## 🔧 Selected pull requests
 
 | Area | Change | PR |
 | --- | --- | --- |
@@ -45,6 +45,51 @@ Added dynamic expert load balancing on Ascend to SGLang, connecting valid-route 
 | Benchmark metrics | Record PD decode handoff time for non-streaming requests | [SGLang #47772](https://github.com/sgl-project/sglang/pull/47772) |
 
 <sub>These PRs were Open when checked on 2026-11-02. Follow each PR for its latest status.</sub>
+
+
+As of **2026-11-02**: **30 upstream PRs — 1 merged, 28 open, 1 closed without merging**, including the earlier EPLB submissions listed below.
+
+<details>
+<summary>📦 More sglang contributions (12 PRs)</summary>
+
+- [#47721 · Bound DeepSeek-V4 RoPE tables by serving context](https://github.com/sgl-project/sglang/pull/47721) · Open
+- [#47720 · Bound DeepSeek-V4 prefill query intermediates](https://github.com/sgl-project/sglang/pull/47720) · Open
+- [#47718 · Release temporary DeepSeek-V4 RoPE tables](https://github.com/sgl-project/sglang/pull/47718) · Open
+- [#47713 · dsv4: Reuse verify sequence lengths](https://github.com/sgl-project/sglang/pull/47713) · Open
+- [#47665 · dsv4: Generate compression positions with stepped arange](https://github.com/sgl-project/sglang/pull/47665) · Open
+- [#47663 · dsv4: Reuse CPU query lengths for prefill metadata](https://github.com/sgl-project/sglang/pull/47663) · Open
+- [#47659 · MLA: preserve NZ cache data during CPU retraction](https://github.com/sgl-project/sglang/pull/47659) · Open
+- [#47656 · moe: Honor SwiGLU clamp for BF16 and INT8 experts](https://github.com/sgl-project/sglang/pull/47656) · Open
+- [#47654 · sparse-kv: Preserve shared prefixes in physical host slots](https://github.com/sgl-project/sglang/pull/47654) · Open
+- [#47647 · dsv4: Avoid unused packed indexer cache allocation](https://github.com/sgl-project/sglang/pull/47647) · Open
+- [#47634 · attention: Slice MLA latent K after TP all-gather](https://github.com/sgl-project/sglang/pull/47634) · Open
+- [#47629 · moe: honor simple TopK scoring and routing scale](https://github.com/sgl-project/sglang/pull/47629) · Open
+
+</details>
+
+<details>
+<summary>📦 More sgl-kernel-npu contributions (8 PRs)</summary>
+
+- [#936 · include dtypes in legacy add RMSNorm cache key](https://github.com/sgl-project/sgl-kernel-npu/pull/936) · Open
+- [#934 · compute weightless RMSNorm in float32](https://github.com/sgl-project/sgl-kernel-npu/pull/934) · Open
+- [#932 · normalize strided gating inputs](https://github.com/sgl-project/sgl-kernel-npu/pull/932) · Open
+- [#930 · preserve tiling configurations across graph replays](https://github.com/sgl-project/sgl-kernel-npu/pull/930) · Open
+- [#926 · include sparse attributes in the tiling cache key](https://github.com/sgl-project/sgl-kernel-npu/pull/926) · Open
+- [#925 · handle cache-location windows larger than 16 tokens](https://github.com/sgl-project/sgl-kernel-npu/pull/925) · Open
+- [#924 · handle fully masked leading tiles in argmax probability](https://github.com/sgl-project/sgl-kernel-npu/pull/924) · Open
+- [#922 · preserve arch22 accumulation order across batch sizes](https://github.com/sgl-project/sgl-kernel-npu/pull/922) · Open
+
+</details>
+
+<details>
+<summary>🗂️ Earlier EPLB submissions (2 PRs)</summary>
+
+- [SGLang #47266](https://github.com/sgl-project/sglang/pull/47266) · Open
+- [SGLang #46233](https://github.com/sgl-project/sglang/pull/46233) · Closed without merging
+
+The merged Ascend dynamic EPLB implementation is [#47574](https://github.com/sgl-project/sglang/pull/47574), featured above.
+
+</details>
 
 [All upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project) · [Merged upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project+is%3Amerged)
 

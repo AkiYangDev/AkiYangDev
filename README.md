@@ -1,69 +1,114 @@
 <p align="center">
-  <img src="assets/hello.svg" width="100%" alt="Hi, I'm Aki! 欢迎来到我的推理小实验室。" />
+  <img src="assets/hello.svg" width="100%" alt="Hi, I'm Aki! Welcome to my little inference lab." />
 </p>
 
-<p align="center"><b>简体中文</b> · <a href="README.en.md">English</a></p>
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 技术笔记</a> &nbsp; · &nbsp;
+  <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 Engineering notes (Chinese)</a> &nbsp; · &nbsp;
   <a href="https://github.com/AkiYangDev/mini-deepinfer">🐋 mini-DeepInfer</a> &nbsp; · &nbsp;
-  <a href="https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+is%3Amerged">🌟 已合入的 PR</a>
+  <a href="https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+is%3Amerged">🌟 Merged PRs</a>
 </p>
 
-<img align="right" src="assets/whale-girl.png" width="155" alt="DeepSeek 鲸鱼娘社区同人立绘" />
+<img align="right" src="assets/whale-girl.png" width="155" alt="Community fan art of DeepSeek's whale girl" />
 
-## 👋 这里是 Aki
+## 👋 A little about me
 
-写推理代码，查精度问题，盯性能时间线，也把踩过的坑整理成笔记。
+I write inference code, debug numerical issues, inspect performance traces, and turn what I learn into engineering notes.
 
-最近主要围着 **SGLang、Ascend 910C 和 DeepSeek** 打转：
+Lately, most of my work revolves around **SGLang, Ascend 910C, and DeepSeek**:
 
-- 🧩 读懂调度、KV Cache、MoE 和投机解码。
-- 🔬 排查算子精度、缓存与计算图问题。
-- 🚀 做专家负载均衡、显存优化和性能分析。
-- ✍️ 写能顺着读、动手跑的文章与小项目。
+- 🧩 Understanding scheduling, KV caches, MoE, and speculative decoding.
+- 🔬 Debugging operator precision, caches, and graph execution.
+- 🚀 Working on expert load balancing, memory use, and inference performance.
+- ✍️ Building small runnable projects and writing guides to go with them.
 
 **LLM inference engineer · SGLang & Ascend NPU contributor**
 
 <br clear="both" />
 
-## 🌟 已合入的贡献
+## 🌟 Merged contributions
 
-**[SGLang #47574 · Ascend 动态 EPLB](https://github.com/sgl-project/sglang/pull/47574)** &nbsp; 🎉 Merged · 2026-11-02
+**[SGLang #47574 · Dynamic EPLB on Ascend](https://github.com/sgl-project/sglang/pull/47574)** &nbsp; 🎉 Merged · 2026-11-02
 
-为 SGLang 接入 Ascend 动态专家负载均衡，打通有效路由统计、专家权重迁移与临时显存控制。
+Added dynamic expert load balancing on Ascend to SGLang, connecting valid-route statistics, expert-weight migration, and bounded temporary memory.
 
-## 🔧 最近提交的 PR
+## 🔧 Selected pull requests
 
-| 方向 | 改动 | PR |
+| Area | Change | PR |
 | --- | --- | --- |
-| 专家负载均衡 | 隔离 draft 统计，复用兼容的 TP 通信组 | [SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) |
-| DeepSeek-V4 显存 | 按请求槽位约束 decode SWA 存储 | [SGLang #47740](https://github.com/sgl-project/sglang/pull/47740) |
-| 算子数值精度 | 修复 GDN gating / decode 的 Softplus 精度 | [sgl-kernel-npu #933](https://github.com/sgl-project/sgl-kernel-npu/pull/933) |
-| 稀疏注意力 | 修复非 2 的幂 TopK 下的 padding 归约问题 | [sgl-kernel-npu #935](https://github.com/sgl-project/sgl-kernel-npu/pull/935) |
-| 量化正确性 | 保留 AWQ fallback 权重类型；修正 GPTQ 零点偏移 | [#47639](https://github.com/sgl-project/sglang/pull/47639) / [#47637](https://github.com/sgl-project/sglang/pull/47637) |
-| 压测计量 | 记录非流式请求的 PD decode 接管时间 | [SGLang #47772](https://github.com/sgl-project/sglang/pull/47772) |
+| Expert load balancing | Isolate draft statistics and reuse compatible TP groups | [SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) |
+| DeepSeek-V4 memory | Bound decode SWA storage by request slots | [SGLang #47740](https://github.com/sgl-project/sglang/pull/47740) |
+| Numerical precision | Fix Softplus accuracy in GDN gating and decode | [sgl-kernel-npu #933](https://github.com/sgl-project/sgl-kernel-npu/pull/933) |
+| Sparse attention | Exclude padded lanes from non-power-of-two TopK reduction | [sgl-kernel-npu #935](https://github.com/sgl-project/sgl-kernel-npu/pull/935) |
+| Quantization | Preserve AWQ fallback weight dtype; correct GPTQ zero-point offset | [#47639](https://github.com/sgl-project/sglang/pull/47639) / [#47637](https://github.com/sgl-project/sglang/pull/47637) |
+| Benchmark metrics | Record PD decode handoff time for non-streaming requests | [SGLang #47772](https://github.com/sgl-project/sglang/pull/47772) |
 
-<sub>上表 PR 在 2026-11-02 核对时均为 Open，最新进度见各 PR。</sub>
+<sub>These PRs were Open when checked on 2026-11-02. Follow each PR for its latest status.</sub>
 
-[全部上游 PR](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project) · [已合入的上游 PR](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project+is%3Amerged)
 
-## 🌱 自己种的小项目
+As of **2026-11-02**: **30 upstream PRs — 1 merged, 28 open, 1 closed without merging**, including the earlier EPLB submissions listed below.
+
+<details>
+<summary>📦 More sglang contributions (12 PRs)</summary>
+
+- [#47721 · Bound DeepSeek-V4 RoPE tables by serving context](https://github.com/sgl-project/sglang/pull/47721) · Open
+- [#47720 · Bound DeepSeek-V4 prefill query intermediates](https://github.com/sgl-project/sglang/pull/47720) · Open
+- [#47718 · Release temporary DeepSeek-V4 RoPE tables](https://github.com/sgl-project/sglang/pull/47718) · Open
+- [#47713 · dsv4: Reuse verify sequence lengths](https://github.com/sgl-project/sglang/pull/47713) · Open
+- [#47665 · dsv4: Generate compression positions with stepped arange](https://github.com/sgl-project/sglang/pull/47665) · Open
+- [#47663 · dsv4: Reuse CPU query lengths for prefill metadata](https://github.com/sgl-project/sglang/pull/47663) · Open
+- [#47659 · MLA: preserve NZ cache data during CPU retraction](https://github.com/sgl-project/sglang/pull/47659) · Open
+- [#47656 · moe: Honor SwiGLU clamp for BF16 and INT8 experts](https://github.com/sgl-project/sglang/pull/47656) · Open
+- [#47654 · sparse-kv: Preserve shared prefixes in physical host slots](https://github.com/sgl-project/sglang/pull/47654) · Open
+- [#47647 · dsv4: Avoid unused packed indexer cache allocation](https://github.com/sgl-project/sglang/pull/47647) · Open
+- [#47634 · attention: Slice MLA latent K after TP all-gather](https://github.com/sgl-project/sglang/pull/47634) · Open
+- [#47629 · moe: honor simple TopK scoring and routing scale](https://github.com/sgl-project/sglang/pull/47629) · Open
+
+</details>
+
+<details>
+<summary>📦 More sgl-kernel-npu contributions (8 PRs)</summary>
+
+- [#936 · include dtypes in legacy add RMSNorm cache key](https://github.com/sgl-project/sgl-kernel-npu/pull/936) · Open
+- [#934 · compute weightless RMSNorm in float32](https://github.com/sgl-project/sgl-kernel-npu/pull/934) · Open
+- [#932 · normalize strided gating inputs](https://github.com/sgl-project/sgl-kernel-npu/pull/932) · Open
+- [#930 · preserve tiling configurations across graph replays](https://github.com/sgl-project/sgl-kernel-npu/pull/930) · Open
+- [#926 · include sparse attributes in the tiling cache key](https://github.com/sgl-project/sgl-kernel-npu/pull/926) · Open
+- [#925 · handle cache-location windows larger than 16 tokens](https://github.com/sgl-project/sgl-kernel-npu/pull/925) · Open
+- [#924 · handle fully masked leading tiles in argmax probability](https://github.com/sgl-project/sgl-kernel-npu/pull/924) · Open
+- [#922 · preserve arch22 accumulation order across batch sizes](https://github.com/sgl-project/sgl-kernel-npu/pull/922) · Open
+
+</details>
+
+<details>
+<summary>🗂️ Earlier EPLB submissions (2 PRs)</summary>
+
+- [SGLang #47266](https://github.com/sgl-project/sglang/pull/47266) · Open
+- [SGLang #46233](https://github.com/sgl-project/sglang/pull/46233) · Closed without merging
+
+The merged Ascend dynamic EPLB implementation is [#47574](https://github.com/sgl-project/sglang/pull/47574), featured above.
+
+</details>
+
+[All upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project) · [Merged upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project+is%3Amerged)
+
+## 🌱 Things I'm growing
 
 ### 🐋 [mini-DeepInfer](https://github.com/AkiYangDev/mini-deepinfer)
 
-**读懂 DeepInfer，从一条请求开始。**
+**Learn DeepInfer, one request at a time.**
 
-一个精简、可运行的教学推理引擎：先在 CPU 看调度、组批和 KV 槽位回收，再用真实 Qwen3.5 权重在 Ascend 910C 上生成文本，逐步理解跨轮执行与投机解码。
+A small, runnable teaching inference engine: explore scheduling, batching, and KV slot reclamation on CPU, then generate text with real Qwen3.5 weights on Ascend 910C while learning execution across iterations and speculative decoding.
 
 ### 📚 [LLM Inference Notes](https://akiyangdev.github.io/llm-inference-notes/)
 
-**把“能跑起来”继续追到“为什么这样跑”。**
+**From getting models to run to understanding how they run.**
 
-记录 SGLang 源码、DeepSeek-V4 Attention / MoE / DSpark、Ascend 部署、Profiling 与调优复盘，把代码、实际结果和判断依据放在一起。
+Chinese engineering notes on SGLang internals, DeepSeek-V4 Attention / MoE / DSpark, Ascend deployment, profiling, and tuning, with code, measured results, and the reasoning behind each conclusion.
 
 <p align="center">
-  <img src="assets/whale-smile.png" width="78" alt="笑得很开心的 Q 版 DeepSeek 鲸鱼娘" /><br />
-  <b>欢迎来聊推理、源码，或者一起捉一只 bug 🐋</b><br />
-  <sub>DeepSeek 鲸鱼娘 · 社区同人</sub>
+  <img src="assets/whale-smile.png" width="78" alt="A cheerful chibi DeepSeek whale girl" /><br />
+  <b>Let's talk inference, read some code, or catch a bug together 🐋</b><br />
+  <sub>DeepSeek whale girl · Community fan art</sub>
 </p>

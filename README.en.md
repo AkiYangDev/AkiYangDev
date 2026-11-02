@@ -33,10 +33,6 @@ Lately, most of my work revolves around **SGLang, Ascend 910C, and DeepSeek**:
 
 Added dynamic expert load balancing on Ascend to SGLang, connecting valid-route statistics, expert-weight migration, and bounded temporary memory.
 
-**[LLM Inference Notes #1 · A better reading experience](https://github.com/AkiYangDev/llm-inference-notes/pull/1)** &nbsp; ✅ Merged
-
-Improved content discovery, mobile long-form reading, and resource loading with reading paths, search entry points, and article navigation.
-
 ## 🔧 Recent pull requests
 
 | Area | Change | PR |

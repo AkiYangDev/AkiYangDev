@@ -33,10 +33,6 @@
 
 为 SGLang 接入 Ascend 动态专家负载均衡，打通有效路由统计、专家权重迁移与临时显存控制。
 
-**[LLM Inference Notes #1 · 笔记站阅读体验](https://github.com/AkiYangDev/llm-inference-notes/pull/1)** &nbsp; ✅ Merged
-
-改善内容发现、手机长文阅读与资源加载，补齐阅读路线、搜索入口和长文目录。
-
 ## 🔧 最近提交的 PR
 
 | 方向 | 改动 | PR |

@@ -5,7 +5,7 @@
 <p align="center"><a href="README.md">English</a> · <b>简体中文</b></p>
 
 <p align="center">
-  <a href="#上游工程贡献">🛠️ 上游贡献</a> &nbsp; · &nbsp;
+  <a href="#upstream-work">🛠️ 上游贡献</a> &nbsp; · &nbsp;
   <a href="https://github.com/AkiYangDev/mini-deepinfer">🐋 mini-DeepInfer</a> &nbsp; · &nbsp;
   <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 技术笔记</a>
 </p>
@@ -23,6 +23,8 @@
 `Python` `PyTorch / torch_npu` `CANNBot-DSL` `HCCL / DeepEP`
 
 <br clear="both" />
+
+<a id="upstream-work"></a>
 
 ## 🛠️ 上游工程贡献
 

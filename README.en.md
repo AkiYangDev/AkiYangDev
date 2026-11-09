@@ -5,7 +5,7 @@
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <a href="#upstream-work">🛠️ Upstream work</a> &nbsp; · &nbsp;
+  <a href="#user-content-upstream-work">🛠️ Upstream work</a> &nbsp; · &nbsp;
   <a href="https://github.com/AkiYangDev/mini-deepinfer">🐋 mini-DeepInfer</a> &nbsp; · &nbsp;
   <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 Engineering notes</a>
 </p>

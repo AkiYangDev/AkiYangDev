@@ -1,52 +1,70 @@
 <p align="center">
-  <img src="assets/hello.svg" width="100%" alt="Hi, I'm Aki! Welcome to my little inference lab." />
+  <img src="assets/hello.svg" width="100%" alt="Hi, I'm Aki! LLM inference runtimes and Ascend NPU kernels." />
 </p>
 
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 Engineering notes (Chinese)</a> &nbsp; · &nbsp;
+  <a href="#upstream-engineering">🛠️ Upstream work</a> &nbsp; · &nbsp;
   <a href="https://github.com/AkiYangDev/mini-deepinfer">🐋 mini-DeepInfer</a> &nbsp; · &nbsp;
-  <a href="https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+is%3Amerged">🌟 Merged PRs</a>
+  <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 Engineering notes</a>
 </p>
 
-<img align="right" src="assets/whale-girl.png" width="155" alt="Community fan art of DeepSeek's whale girl" />
+<img align="right" src="assets/whale-girl.png" width="128" alt="Community fan art of DeepSeek's whale girl" />
 
-## 👋 A little about me
+## 👋 I'm Aki
 
-I write inference code, debug numerical issues, inspect performance traces, and turn what I learn into engineering notes.
+**LLM inference systems & Ascend NPU operators**
 
-Lately, most of my work revolves around **SGLang, Ascend 910C, and DeepSeek**:
+I work on SGLang and sgl-kernel-npu, connecting serving-runtime behavior with the operators underneath it: MoE expert migration, speculative-decoding state, quantized attention, and numerical correctness.
 
-- 🧩 Understanding scheduling, KV caches, MoE, and speculative decoding.
-- 🔬 Debugging operator precision, caches, and graph execution.
-- 🚀 Working on expert load balancing, memory use, and inference performance.
-- ✍️ Building small runnable projects and writing guides to go with them.
+My contributions span implementation, bug diagnosis, reproducible checks, and technical documentation for **DeepSeek-V4 / V4.1 on Ascend**.
 
-**LLM inference engineer · SGLang & Ascend NPU contributor**
+`Python` `PyTorch / torch_npu` `CANNBot-DSL` `HCCL / DeepEP`
 
 <br clear="both" />
 
-## 🌟 Merged contributions
+## 🛠️ Upstream engineering
 
-**[SGLang #47574 · Dynamic EPLB on Ascend](https://github.com/sgl-project/sglang/pull/47574)** &nbsp; 🎉 Merged · 2026-11-02
+### DeepSeek-V4.1 · quantized Indexer & sparse MLA
 
-Added dynamic expert load balancing on Ascend to SGLang, connecting valid-route statistics, expert-weight migration, and bounded temporary memory.
+**[sgl-kernel-npu #964](https://github.com/sgl-project/sgl-kernel-npu/pull/964)** &nbsp; ✅ Merged · 2026-11-09 · Co-developed with [ClownBin](https://github.com/ClownBin)
 
-Follow-up: [SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) · Open
+Integrated **seven CANNBot-DSL operator APIs**—four compute operators and three metadata builders—for MXFP4 K-cache updates, two-stage sparse indexing, and mixed FP8/FP4 MLA.
 
-## 🔧 Selected pull requests
+My integration work covers API and dispatch contracts, independent Torch references, tests, bilingual API docs, and a backport that pads K-projection backing storage for tail tiles. [Contribution commits](https://github.com/sgl-project/sgl-kernel-npu/pull/964/commits)
 
-| Area | Change | PR |
+### Dynamic EPLB · expert migration & statistics ownership
+
+**[SGLang #47574](https://github.com/sgl-project/sglang/pull/47574)** &nbsp; ✅ Merged · 2026-11-02
+
+Implemented dynamic expert load balancing on Ascend, connecting valid-route statistics, expert-weight migration, and bounded temporary memory.
+
+**Bug discovery → merged community fix:** I identified and reproduced empty draft records consuming the target model's EPLB history ([issue #48603](https://github.com/sgl-project/sglang/issues/48603)) and supplied the recorder-lifecycle fix in [#47922](https://github.com/sgl-project/sglang/pull/47922); the community integrated that core fix in [#48751](https://github.com/sgl-project/sglang/pull/48751), authored by ch-wan and merged on 2026-11-06.
+
+<details>
+<summary>🔬 What made this bug subtle?</summary>
+
+Draft execution can use `TARGET_VERIFY`, so the guard must follow the runner's role. Disabling counting hooks inside the model still lets the outer recorder reset counters and append an empty observation.
+
+The fix has two parts: disable recording **before** entering the forward context, and make an already-disabled recorder skip reset, collection, and append. The issue includes a current-main reproducer and published 16-rank service records.
+
+</details>
+
+**Open follow-up:** [#48835 · Preserve arch35 expert storage during migration](https://github.com/sgl-project/sglang/pull/48835).
+
+## 🔧 Selected patches
+
+| Area | Engineering change | PR |
 | --- | --- | --- |
-| DeepSeek-V4 memory | Bound decode SWA storage by request slots | [SGLang #47740](https://github.com/sgl-project/sglang/pull/47740) |
-| Numerical precision | Fix Softplus accuracy in GDN gating and decode | [sgl-kernel-npu #933](https://github.com/sgl-project/sgl-kernel-npu/pull/933) |
-| Sparse attention | Exclude padded lanes from non-power-of-two TopK reduction | [sgl-kernel-npu #935](https://github.com/sgl-project/sgl-kernel-npu/pull/935) |
-| Quantization | Preserve AWQ fallback weight dtype; correct GPTQ zero-point offset | [#47639](https://github.com/sgl-project/sglang/pull/47639) / [#47637](https://github.com/sgl-project/sglang/pull/47637) |
-| Benchmark metrics | Record PD decode handoff time for non-streaming requests | [SGLang #47772](https://github.com/sgl-project/sglang/pull/47772) |
+| PD state transfer | Peer-local C4 rows and empty state components across PP stages | [#47934](https://github.com/sgl-project/sglang/pull/47934) / [#47937](https://github.com/sgl-project/sglang/pull/47937) / [#47938](https://github.com/sgl-project/sglang/pull/47938) |
+| Decode memory | Bound DeepSeek-V4 SWA storage by request slots | [#47740](https://github.com/sgl-project/sglang/pull/47740) |
+| Numerical precision | Preserve Softplus accuracy in GDN gating and decode | [kernel #933](https://github.com/sgl-project/sgl-kernel-npu/pull/933) |
+| Sparse attention | Exclude padded lanes from non-power-of-two TopK reduction | [kernel #935](https://github.com/sgl-project/sgl-kernel-npu/pull/935) |
+| Quantization | Preserve AWQ fallback dtype and correct GPTQ zero-point offsets | [#47639](https://github.com/sgl-project/sglang/pull/47639) / [#47637](https://github.com/sgl-project/sglang/pull/47637) |
+| Benchmark timing | Record PD decode handoff time for non-streaming requests | [#47772](https://github.com/sgl-project/sglang/pull/47772) |
 
-<sub>These PRs were Open when checked on 2026-11-02. Follow each PR for its latest status.</sub>
-
+<sub>Selected patches and the arch35 follow-up were Open when checked on 2026-11-09. Follow each PR for its latest status.</sub>
 
 <details>
 <summary>📦 More sglang contributions (12 PRs)</summary>
@@ -80,24 +98,20 @@ Follow-up: [SGLang #47595](https://github.com/sgl-project/sglang/pull/47595) · 
 
 </details>
 
-[All upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project) · [Merged upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project+is%3Amerged)
+[More authored upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project+is%3Aopen)
 
-## 🌱 Things I'm growing
+## 🐋 Projects & writing
 
-### 🐋 [mini-DeepInfer](https://github.com/AkiYangDev/mini-deepinfer)
+### [mini-DeepInfer](https://github.com/AkiYangDev/mini-deepinfer)
 
-**Learn DeepInfer, one request at a time.**
+A runnable teaching inference engine built around DeepInfer's execution design: scheduling, batching, KV-slot reclamation, execution across iterations, and speculative decoding. Start on CPU, then generate text with real Qwen3.5 weights on Ascend 910C.
 
-A small, runnable teaching inference engine: explore scheduling, batching, and KV slot reclamation on CPU, then generate text with real Qwen3.5 weights on Ascend 910C while learning execution across iterations and speculative decoding.
+### [LLM Inference Notes](https://akiyangdev.github.io/llm-inference-notes/)
 
-### 📚 [LLM Inference Notes](https://akiyangdev.github.io/llm-inference-notes/)
-
-**From getting models to run to understanding how they run.**
-
-Chinese engineering notes on SGLang internals, DeepSeek-V4 Attention / MoE / DSpark, Ascend deployment, profiling, and tuning, with code, measured results, and the reasoning behind each conclusion.
+Chinese engineering articles connecting SGLang source code with DeepSeek Attention / MoE / DSpark, distributed state ownership, quantization, profiling, and measured tuning results.
 
 <p align="center">
-  <img src="assets/whale-smile.png" width="78" alt="A cheerful chibi DeepSeek whale girl" /><br />
-  <b>Let's talk inference, read some code, or catch a bug together 🐋</b><br />
+  <img src="assets/whale-smile.png" width="70" alt="A cheerful chibi DeepSeek whale girl" /><br />
+  <b>Always happy to talk inference, kernels, and a well-reproduced bug 🐋</b><br />
   <sub>DeepSeek whale girl · Community fan art</sub>
 </p>

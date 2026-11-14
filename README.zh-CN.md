@@ -78,6 +78,12 @@
 
 ## 🔧 进行中的修复与优化
 
+### DeepSeek-V4.1 在 Ascend 950 上的框架接入
+
+**[SGLang #47660](https://github.com/sgl-project/sglang/pull/47660) · Open。** 为 Ascend 950 接入 DeepSeek-V4.1 推理，涵盖低压缩比 KV、两级索引、混合量化稀疏注意力、KV/index 内存池、图回放与 DSpark。
+
+相关集成与上游适配：[#49005](https://github.com/sgl-project/sglang/pull/49005) · Open。
+
 <details>
 <summary>精选待合入改动 · 状态传输、显存、精度与计时（9 PRs）</summary>
 

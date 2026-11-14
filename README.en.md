@@ -78,6 +78,12 @@ All 3,072 paired generated texts match. ON feeds a larger observed decode batch,
 
 ## 🔧 Open patches
 
+### DeepSeek-V4.1 backend integration on Ascend 950
+
+**[SGLang #47660](https://github.com/sgl-project/sglang/pull/47660) · Open.** Adds DeepSeek-V4.1 inference support on Ascend 950: low-ratio KV compression, two-level indexing, mixed-quantization sparse attention, KV/index pools, graph replay, and DSpark integration.
+
+Related integration and upstream alignment: [#49005](https://github.com/sgl-project/sglang/pull/49005) · Open.
+
 <details>
 <summary>Selected open patches · state transfer, memory, precision & timing (9 PRs)</summary>
 

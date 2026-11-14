@@ -14,11 +14,11 @@
 
 **DeepSeek 推理系统与 Ascend NPU 工程**
 
-`SGLang` `DeepSeek` `Ascend 910C`
+`SGLang` `DeepSeek` `Ascend 910C` `Ascend 950`
 
 <img align="right" src="assets/whale-girl.png" width="110" alt="DeepSeek 鲸鱼娘社区同人立绘" />
 
-参与 **SGLang** 和 **sgl-kernel-npu**，在 Ascend 910C 上实现和排查 DeepSeek 推理链路。
+参与 **SGLang** 和 **sgl-kernel-npu**，在 Ascend 910C 和 Ascend 950 平台上实现和排查 DeepSeek 推理链路。
 
 上游工作涉及 **MoE / EPLB**、prefill/decode 状态传输、投机解码统计和 NPU 算子正确性，并用可复现测试与服务实测核验结果。
 
@@ -32,7 +32,7 @@
 
 **[SGLang #49701](https://github.com/sgl-project/sglang/pull/49701)** &nbsp; ✅ 已合入 · 2026-11-13
 
-以可写字节视图迁移完整专家物理存储，保留 NZ padding 和计算图引用的原分配；复用 TP/HCCL 通信，并隔离 draft 预热与捕获对 target 统计的影响。
+以可写字节视图迁移完整专家物理存储，保留 NZ padding 和计算图引用的原分配；复用 TP/HCCL 通信，并隔离 draft 预热与捕获对 target 统计的影响，同时覆盖 Ascend 950PR 的 FP4 NZ format 50。
 
 **此前已合入的 EPLB 工作：** [#47574](https://github.com/sgl-project/sglang/pull/47574) 接入初始 Ascend 支持（11 月 2 日）；ch-wan 发起的 [#48751](https://github.com/sgl-project/sglang/pull/48751) 采用了我的核心 recorder 修复（11 月 6 日）。该问题由我在 [issue #48603](https://github.com/sgl-project/sglang/issues/48603) 发现并报告，原始修复见 [#47922](https://github.com/sgl-project/sglang/pull/47922)。
 

@@ -14,11 +14,11 @@
 
 **DeepSeek inference & Ascend NPU engineering**
 
-`SGLang` `DeepSeek` `Ascend 910C`
+`SGLang` `DeepSeek` `Ascend 910C` `Ascend 950`
 
 <img align="right" src="assets/whale-girl.png" width="110" alt="Community fan art of DeepSeek's whale girl" />
 
-I contribute to **SGLang** and **sgl-kernel-npu**, building and debugging DeepSeek inference on Ascend 910C.
+I contribute to **SGLang** and **sgl-kernel-npu**, building and debugging DeepSeek inference across Ascend 910C and Ascend 950 platforms.
 
 My upstream work spans **MoE / EPLB**, prefill/decode state transfer, speculative-decoding statistics, and NPU operator correctness, with reproducible tests and serving measurements.
 
@@ -32,7 +32,7 @@ My upstream work spans **MoE / EPLB**, prefill/decode state transfer, speculativ
 
 **[SGLang #49701](https://github.com/sgl-project/sglang/pull/49701)** &nbsp; ✅ Merged · 2026-11-13
 
-Reworked expert migration to move complete physical storage blocks through writable byte views, preserving NZ padding and graph-referenced allocations. Reused TP/HCCL communication and isolated draft warmup/capture from target statistics.
+Reworked expert migration to move complete physical storage blocks through writable byte views, preserving NZ padding and graph-referenced allocations. Reused TP/HCCL communication and isolated draft warmup/capture from target statistics. Also covered FP4 NZ format 50 on Ascend 950PR.
 
 **Earlier merged EPLB work:** [#47574](https://github.com/sgl-project/sglang/pull/47574) added the initial Ascend support (Nov 2); [#48751](https://github.com/sgl-project/sglang/pull/48751), opened by ch-wan, adopted my core recorder fix (Nov 6). I discovered and reported the bug in [issue #48603](https://github.com/sgl-project/sglang/issues/48603) and supplied the original fix in [#47922](https://github.com/sgl-project/sglang/pull/47922).
 

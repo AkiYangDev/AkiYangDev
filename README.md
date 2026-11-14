@@ -5,34 +5,36 @@
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <a href="#user-content-upstream-work">🌟 Upstream work</a> &nbsp; · &nbsp;
+  <a href="#user-content-upstream-work">🌟 Merged work</a> &nbsp; · &nbsp;
   <a href="https://github.com/AkiYangDev/mini-deepinfer">🐋 mini-DeepInfer</a> &nbsp; · &nbsp;
   <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 Engineering notes</a>
 </p>
 
-<img align="right" src="assets/whale-girl.png" width="124" alt="Community fan art of DeepSeek's whale girl" />
-
 ## 👋 I'm Aki
 
-**LLM inference systems & Ascend NPU operators**
+**DeepSeek inference & Ascend NPU engineering**
 
-I contribute to SGLang and sgl-kernel-npu, working across MoE expert migration, distributed state transfer, speculative decoding, and quantized attention.
+`SGLang` `DeepSeek` `Ascend 910C`
 
-I care about the whole path: **correct storage and state, a reproducible fix, and measurements that explain the trade-off.**
+<img align="right" src="assets/whale-girl.png" width="110" alt="Community fan art of DeepSeek's whale girl" />
 
-`Python` `PyTorch / torch_npu` `CANNBot-DSL` `HCCL / DeepEP`
+I contribute to **SGLang** and **sgl-kernel-npu**, building and debugging DeepSeek inference on Ascend 910C.
+
+My upstream work spans **MoE / EPLB**, prefill/decode state transfer, speculative-decoding statistics, and NPU operator correctness, with reproducible tests and serving measurements.
 
 <br clear="both" />
 
 <a id="upstream-work"></a>
 
-## 🌟 Featured engineering
+## ✅ Merged upstream work
 
-### Physical-storage EPLB on Ascend
+### 🌟 Physical-storage EPLB on Ascend
 
 **[SGLang #49701](https://github.com/sgl-project/sglang/pull/49701)** &nbsp; ✅ Merged · 2026-11-13
 
 Reworked expert migration to move complete physical storage blocks through writable byte views, preserving NZ padding and graph-referenced allocations. Reused TP/HCCL communication and isolated draft warmup/capture from target statistics.
+
+**Earlier merged EPLB work:** [#47574](https://github.com/sgl-project/sglang/pull/47574) added the initial Ascend support (Nov 2); [#48751](https://github.com/sgl-project/sglang/pull/48751), opened by ch-wan, adopted my core recorder fix (Nov 6). I discovered and reported the bug in [issue #48603](https://github.com/sgl-project/sglang/issues/48603) and supplied the original fix in [#47922](https://github.com/sgl-project/sglang/pull/47922).
 
 <picture>
   <source media="(max-width: 600px)" srcset="assets/eplb-storage-mobile.svg" />
@@ -63,23 +65,21 @@ All 3,072 paired generated texts match. ON feeds a larger observed decode batch,
 
 </details>
 
-<details>
-<summary>🧩 The EPLB contribution trail</summary>
+### More merged work
 
-- **Initial support:** [#47574](https://github.com/sgl-project/sglang/pull/47574), merged on 2026-11-02, brought dynamic expert balancing to Ascend.
-- **Bug discovery and original fix:** I reported draft empty records consuming the target window in [issue #48603](https://github.com/sgl-project/sglang/issues/48603) and supplied the lifecycle fix in [#47922](https://github.com/sgl-project/sglang/pull/47922). The community integrated the core fix in ch-wan's [#48751](https://github.com/sgl-project/sglang/pull/48751), merged on 2026-11-06.
+- **A3 prefill/decode state — [SGLang #47934](https://github.com/sgl-project/sglang/pull/47934)** · Nov 12  
+  Fixed C4 handoff between different P/D ring sizes with row-sized registration and peer-local addressing.
 
-</details>
+- **Operator API integration — [kernel #1012](https://github.com/sgl-project/sgl-kernel-npu/pull/1012)** · Nov 10  
+  Added explicit `_dsl` names across wrappers, registry, tests and bilingual docs while preserving the implementation logic.
 
-## ✅ More merged work
-
-| Work | Contribution | Upstream |
-| --- | --- | --- |
-| A3 prefill/decode state | Fixed C4 handoff between different P/D ring sizes with row-sized registration and peer-local addressing. | [SGLang #47934](https://github.com/sgl-project/sglang/pull/47934) · Nov 12 |
-| DeepSeek-V4.1 operators | Co-developed seven DSL compute/metadata APIs with ClownBin: dispatch contracts, Torch references, tests and K-tail storage correction. | [kernel #964](https://github.com/sgl-project/sgl-kernel-npu/pull/964) · Nov 9 |
-| Operator API integration | Added explicit `_dsl` names across wrappers, registry, tests and bilingual docs while preserving the implementation logic. | [kernel #1012](https://github.com/sgl-project/sgl-kernel-npu/pull/1012) · Nov 10 |
+- **DeepSeek-V4.1 operators — [kernel #964](https://github.com/sgl-project/sgl-kernel-npu/pull/964)** · Nov 9  
+  Co-developed seven CANNBot-DSL compute/metadata APIs with ClownBin: dispatch contracts, Torch references, tests and K-tail storage correction.
 
 ## 🔧 Open patches
+
+<details>
+<summary>Selected open patches · state transfer, memory, precision & timing (9 PRs)</summary>
 
 | Area | Engineering change | PR |
 | --- | --- | --- |
@@ -93,8 +93,10 @@ All 3,072 paired generated texts match. ON feeds a larger observed decode batch,
 
 <sub>Open status checked on 2026-11-14. Each link carries the latest upstream state.</sub>
 
+</details>
+
 <details>
-<summary>📦 More sglang contributions (12 PRs)</summary>
+<summary>📦 More open SGLang patches (12 PRs)</summary>
 
 - [#47721 · Bound DeepSeek-V4 RoPE tables by serving context](https://github.com/sgl-project/sglang/pull/47721) · Open
 - [#47720 · Bound DeepSeek-V4 prefill query intermediates](https://github.com/sgl-project/sglang/pull/47720) · Open
@@ -112,7 +114,7 @@ All 3,072 paired generated texts match. ON feeds a larger observed decode batch,
 </details>
 
 <details>
-<summary>📦 More sgl-kernel-npu contributions (8 PRs)</summary>
+<summary>📦 More open NPU operator patches (8 PRs)</summary>
 
 - [#936 · include dtypes in legacy add RMSNorm cache key](https://github.com/sgl-project/sgl-kernel-npu/pull/936) · Open
 - [#934 · compute weightless RMSNorm in float32](https://github.com/sgl-project/sgl-kernel-npu/pull/934) · Open
@@ -144,3 +146,4 @@ Chinese articles connecting upstream code, reproducible examples and measured be
   <b>Inference, kernels, and a well-reproduced bug. Let's talk 🐋</b><br />
   <sub>DeepSeek whale girl · Community fan art</sub>
 </p>
+

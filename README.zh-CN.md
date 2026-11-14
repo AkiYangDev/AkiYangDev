@@ -5,34 +5,36 @@
 <p align="center"><a href="README.md">English</a> · <b>简体中文</b></p>
 
 <p align="center">
-  <a href="#user-content-upstream-work">🌟 上游贡献</a> &nbsp; · &nbsp;
+  <a href="#user-content-upstream-work">🌟 已合入成果</a> &nbsp; · &nbsp;
   <a href="https://github.com/AkiYangDev/mini-deepinfer">🐋 mini-DeepInfer</a> &nbsp; · &nbsp;
   <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 技术笔记</a>
 </p>
 
-<img align="right" src="assets/whale-girl.png" width="124" alt="DeepSeek 鲸鱼娘社区同人立绘" />
-
 ## 👋 这里是 Aki
 
-**大模型推理系统与 Ascend NPU 算子开发**
+**DeepSeek 推理系统与 Ascend NPU 工程**
 
-参与 SGLang 和 sgl-kernel-npu，围绕 MoE 专家迁移、分布式状态传输、投机解码与量化注意力做工程实现。
+`SGLang` `DeepSeek` `Ascend 910C`
 
-关心从代码到运行结果的完整链路：**存储和状态是否正确、修复能否复现、性能取舍能否用测量解释。**
+<img align="right" src="assets/whale-girl.png" width="110" alt="DeepSeek 鲸鱼娘社区同人立绘" />
 
-`Python` `PyTorch / torch_npu` `CANNBot-DSL` `HCCL / DeepEP`
+参与 **SGLang** 和 **sgl-kernel-npu**，在 Ascend 910C 上实现和排查 DeepSeek 推理链路。
+
+上游工作涉及 **MoE / EPLB**、prefill/decode 状态传输、投机解码统计和 NPU 算子正确性，并用可复现测试与服务实测核验结果。
 
 <br clear="both" />
 
 <a id="upstream-work"></a>
 
-## 🌟 重点工程成果
+## ✅ 已合入上游成果
 
-### Ascend EPLB 物理存储迁移
+### 🌟 Ascend EPLB 物理存储迁移
 
 **[SGLang #49701](https://github.com/sgl-project/sglang/pull/49701)** &nbsp; ✅ 已合入 · 2026-11-13
 
 以可写字节视图迁移完整专家物理存储，保留 NZ padding 和计算图引用的原分配；复用 TP/HCCL 通信，并隔离 draft 预热与捕获对 target 统计的影响。
+
+**此前已合入的 EPLB 工作：** [#47574](https://github.com/sgl-project/sglang/pull/47574) 接入初始 Ascend 支持（11 月 2 日）；ch-wan 发起的 [#48751](https://github.com/sgl-project/sglang/pull/48751) 采用了我的核心 recorder 修复（11 月 6 日）。该问题由我在 [issue #48603](https://github.com/sgl-project/sglang/issues/48603) 发现并报告，原始修复见 [#47922](https://github.com/sgl-project/sglang/pull/47922)。
 
 <picture>
   <source media="(max-width: 600px)" srcset="assets/eplb-storage-mobile.svg" />
@@ -63,23 +65,21 @@
 
 </details>
 
-<details>
-<summary>🧩 EPLB 贡献沿革</summary>
+### 更多已合入成果
 
-- **初始支持：** [#47574](https://github.com/sgl-project/sglang/pull/47574) 于 2026-11-02 合入，为 Ascend 接入动态专家负载均衡。
-- **发现问题与原始修复：** 我在 [issue #48603](https://github.com/sgl-project/sglang/issues/48603) 报告 draft 空记录挤占 target 窗口，并在 [#47922](https://github.com/sgl-project/sglang/pull/47922) 提供生命周期修复；社区随后由 ch-wan 在 [#48751](https://github.com/sgl-project/sglang/pull/48751) 接入核心修复，于 2026-11-06 合入。
+- **A3 prefill/decode 状态 — [SGLang #47934](https://github.com/sgl-project/sglang/pull/47934)** · 11 月 12 日  
+  以按行注册和对端局部寻址，修复 P/D 环大小不同时的 C4 状态交接。
 
-</details>
+- **算子 API 集成 — [kernel #1012](https://github.com/sgl-project/sgl-kernel-npu/pull/1012)** · 11 月 10 日  
+  统一 wrapper、registry、测试与双语文档中的 `_dsl` 名称，保留实现逻辑。
 
-## ✅ 更多已合入成果
-
-| 工作 | 具体贡献 | 上游 |
-| --- | --- | --- |
-| A3 prefill/decode 状态 | 以按行注册和对端局部寻址，修复 P/D 环大小不同时的 C4 状态交接。 | [SGLang #47934](https://github.com/sgl-project/sglang/pull/47934) · 11 月 12 日 |
-| DeepSeek-V4.1 算子 | 与 ClownBin 协作集成七个 DSL 计算/metadata API，完善分发契约、Torch 参考、测试与 K 尾块存储修正。 | [kernel #964](https://github.com/sgl-project/sgl-kernel-npu/pull/964) · 11 月 9 日 |
-| 算子 API 集成 | 统一 wrapper、registry、测试与双语文档中的 `_dsl` 名称，保留实现逻辑。 | [kernel #1012](https://github.com/sgl-project/sgl-kernel-npu/pull/1012) · 11 月 10 日 |
+- **DeepSeek-V4.1 算子 — [kernel #964](https://github.com/sgl-project/sgl-kernel-npu/pull/964)** · 11 月 9 日  
+  与 ClownBin 协作集成七个 CANNBot-DSL 计算/metadata API，完善分发契约、Torch 参考、测试与 K 尾块存储修正。
 
 ## 🔧 进行中的修复与优化
+
+<details>
+<summary>精选待合入改动 · 状态传输、显存、精度与计时（9 PRs）</summary>
 
 | 方向 | 工程改动 | PR |
 | --- | --- | --- |
@@ -93,8 +93,10 @@
 
 <sub>Open 状态核对于 2026-11-14，最新上游进度见各链接。</sub>
 
+</details>
+
 <details>
-<summary>📦 更多 sglang 贡献 (12 PRs)</summary>
+<summary>📦 更多待合入 SGLang 修复与优化（12 PRs）</summary>
 
 - [#47721 · 按服务上下文限制 DeepSeek-V4 RoPE 表大小](https://github.com/sgl-project/sglang/pull/47721) · Open
 - [#47720 · 约束 DeepSeek-V4 prefill query 中间张量](https://github.com/sgl-project/sglang/pull/47720) · Open
@@ -112,7 +114,7 @@
 </details>
 
 <details>
-<summary>📦 更多 sgl-kernel-npu 贡献 (8 PRs)</summary>
+<summary>📦 更多待合入 NPU 算子修复（8 PRs）</summary>
 
 - [#936 · 为旧版 add RMSNorm 缓存键加入 dtype](https://github.com/sgl-project/sgl-kernel-npu/pull/936) · Open
 - [#934 · 以 FP32 计算无权重 RMSNorm](https://github.com/sgl-project/sgl-kernel-npu/pull/934) · Open
@@ -144,3 +146,4 @@
   <b>欢迎来聊推理、算子，或者一个能复现的 bug 🐋</b><br />
   <sub>DeepSeek 鲸鱼娘 · 社区同人</sub>
 </p>
+

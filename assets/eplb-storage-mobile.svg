@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="650" viewBox="0 0 740 650" role="img" aria-labelledby="title desc">
+<title id="title">Physical expert storage migration</title><desc id="desc">NZ and packed model storage becomes writable expert-byte views for the existing migration updater. Padding and graph-referenced allocation addresses are preserved. TP/HCCL communication and scratch remain.</desc>
+<style>text{font-family:'Segoe UI',sans-serif}.bg{fill:#f0f7ff}.box{fill:#fff;stroke:#b8d1ec;stroke-width:2}.ink{fill:#203653}.muted{fill:#476181}.line{stroke:#6c97c6;stroke-width:3;fill:none}@media(prefers-color-scheme:dark){.bg{fill:#16263e}.box{fill:#1c324c;stroke:#466787}.ink{fill:#e4efff}.muted{fill:#b0c7e3}.line{stroke:#81a9d7}}</style>
+<rect class="bg" width="740" height="650" rx="24"/><text class="muted" x="30" y="43" font-size="26">Expert weights move. Allocations stay.</text>
+<rect class="box" x="30" y="66" width="680" height="130" rx="16"/><text class="ink" x="58" y="119" font-size="34" font-weight="650">NZ / packed storage</text><text class="muted" x="58" y="163" font-size="25">Complete expert blocks + physical padding</text>
+<path class="line" d="M370 205v28m-9-9 9 9 9-9"/>
+<rect class="box" x="30" y="246" width="680" height="130" rx="16"/><text class="ink" x="58" y="299" font-size="34" font-weight="650">Writable expert-byte views</text><text class="muted" x="58" y="343" font-size="25">Same backing allocation</text>
+<path class="line" d="M370 385v28m-9-9 9 9 9-9"/>
+<rect class="box" x="30" y="426" width="680" height="130" rx="16"/><text class="ink" x="58" y="479" font-size="34" font-weight="650">Existing migration updater</text><text class="muted" x="58" y="523" font-size="25">TP / HCCL communication + scratch</text>
+<text class="muted" x="30" y="608" font-size="25">Graph-referenced addresses are preserved.</text></svg>

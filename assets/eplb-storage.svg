@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="244" viewBox="0 0 1080 244" role="img" aria-labelledby="title desc">
+<title id="title">Physical expert storage migration</title>
+<desc id="desc">NZ and packed weights are exposed as writable expert-byte rows to the existing migration updater. Physical padding travels with each expert, with TP communication and scratch buffers. Model allocation addresses are preserved for graph replay.</desc>
+<style>text{font-family:'Segoe UI','Microsoft YaHei',sans-serif}.bg{fill:#f0f7ff}.box{fill:#fff;stroke:#b8d1ec;stroke-width:1.5}.ink{fill:#203653}.muted{fill:#476181}.line{stroke:#6c97c6;stroke-width:2;fill:none}.cell{fill:#6f9cda}.pad{fill:#c9dbf1}.accent{fill:#2b6c63}@media(prefers-color-scheme:dark){.bg{fill:#16263e}.box{fill:#1c324c;stroke:#466787}.ink{fill:#e4efff}.muted{fill:#b0c7e3}.line{stroke:#81a9d7}.cell{fill:#7faaf0}.pad{fill:#405e82}.accent{fill:#a1d7c9}}</style>
+<rect class="bg" x="0" y="0" width="1080" height="244" rx="22"/>
+<text x="30" y="36" font-size="19" class="muted">Expert weights move. Graph-referenced allocations stay.</text>
+<g><rect class="box" x="28" y="60" width="294" height="120" rx="12"/><rect class="cell" x="47" y="80" width="30" height="18" rx="3"/><rect class="cell" x="81" y="80" width="30" height="18" rx="3"/><rect class="pad" x="115" y="80" width="12" height="18" rx="2"/><text class="ink" x="47" y="129" font-size="23" font-weight="650">NZ / packed storage</text><text class="muted" x="47" y="157" font-size="17">Complete expert blocks + padding</text></g>
+<g class="line"><path d="M333 121H380"/><path d="M371 114l9 7-9 7"/></g>
+<g><rect class="box" x="392" y="60" width="294" height="120" rx="12"/><g class="cell"><rect x="411" y="80" width="27" height="18" rx="3"/><rect x="442" y="80" width="27" height="18" rx="3"/><rect x="473" y="80" width="27" height="18" rx="3"/></g><text class="ink" x="411" y="129" font-size="23" font-weight="650">Writable byte views</text><text class="muted" x="411" y="157" font-size="17">Same backing allocation</text></g>
+<g class="line"><path d="M697 121H744"/><path d="M735 114l9 7-9 7"/></g>
+<g><rect class="box" x="756" y="60" width="294" height="120" rx="12"/><text class="accent" x="775" y="97" font-size="18" font-weight="650">TP / HCCL + scratch</text><text class="ink" x="775" y="129" font-size="23" font-weight="650">Migration updater</text><text class="muted" x="775" y="157" font-size="17">Existing expert transfer algorithm</text></g>
+<text class="muted" x="30" y="216" font-size="18">Original dtype, shape, strides and storage format stay intact.</text>
+</svg>

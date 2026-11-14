@@ -1,24 +1,24 @@
 <p align="center">
-  <img src="assets/hello.svg" width="100%" alt="Hi, I'm Aki! LLM inference runtimes and Ascend NPU kernels." />
+  <img src="assets/hello.svg" width="100%" alt="Hi, I'm Aki! LLM inference systems, Ascend operators and measured performance." />
 </p>
 
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
-  <a href="#user-content-upstream-work">🛠️ Upstream work</a> &nbsp; · &nbsp;
+  <a href="#user-content-upstream-work">🌟 Upstream work</a> &nbsp; · &nbsp;
   <a href="https://github.com/AkiYangDev/mini-deepinfer">🐋 mini-DeepInfer</a> &nbsp; · &nbsp;
   <a href="https://akiyangdev.github.io/llm-inference-notes/">📚 Engineering notes</a>
 </p>
 
-<img align="right" src="assets/whale-girl.png" width="128" alt="Community fan art of DeepSeek's whale girl" />
+<img align="right" src="assets/whale-girl.png" width="124" alt="Community fan art of DeepSeek's whale girl" />
 
 ## 👋 I'm Aki
 
 **LLM inference systems & Ascend NPU operators**
 
-I work on SGLang and sgl-kernel-npu, connecting serving-runtime behavior with the operators underneath it: MoE expert migration, speculative-decoding state, quantized attention, and numerical correctness.
+I contribute to SGLang and sgl-kernel-npu, working across MoE expert migration, distributed state transfer, speculative decoding, and quantized attention.
 
-My contributions span implementation, bug diagnosis, reproducible checks, and technical documentation for **DeepSeek-V4 / V4.1 on Ascend**.
+I care about the whole path: **correct storage and state, a reproducible fix, and measurements that explain the trade-off.**
 
 `Python` `PyTorch / torch_npu` `CANNBot-DSL` `HCCL / DeepEP`
 
@@ -26,47 +26,72 @@ My contributions span implementation, bug diagnosis, reproducible checks, and te
 
 <a id="upstream-work"></a>
 
-## 🛠️ Upstream engineering
+## 🌟 Featured engineering
 
-### DeepSeek-V4.1 · quantized Indexer & sparse MLA
+### Physical-storage EPLB on Ascend
 
-**[sgl-kernel-npu #964](https://github.com/sgl-project/sgl-kernel-npu/pull/964)** &nbsp; ✅ Merged · 2026-11-09 · Co-developed with [ClownBin](https://github.com/ClownBin)
+**[SGLang #49701](https://github.com/sgl-project/sglang/pull/49701)** &nbsp; ✅ Merged · 2026-11-13
 
-Integrated **seven CANNBot-DSL operator APIs**—four compute operators and three metadata builders—for MXFP4 K-cache updates, two-stage sparse indexing, and mixed FP8/FP4 MLA.
+Reworked expert migration to move complete physical storage blocks through writable byte views, preserving NZ padding and graph-referenced allocations. Reused TP/HCCL communication and isolated draft warmup/capture from target statistics.
 
-My integration work covers API and dispatch contracts, independent Torch references, tests, bilingual API docs, and a backport that pads K-projection backing storage for tail tiles. [Contribution commits](https://github.com/sgl-project/sgl-kernel-npu/pull/964/commits)
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/eplb-storage-mobile.svg" />
+  <img src="assets/eplb-storage.svg" width="100%" alt="NZ and packed storage becomes writable expert-byte rows for the migration updater, retaining padding and the original model allocation." />
+</picture>
 
-### Dynamic EPLB · expert migration & statistics ownership
-
-**[SGLang #47574](https://github.com/sgl-project/sglang/pull/47574)** &nbsp; ✅ Merged · 2026-11-02
-
-Implemented dynamic expert load balancing on Ascend, connecting valid-route statistics, expert-weight migration, and bounded temporary memory.
-
-**Bug discovery → merged community fix:** I identified and reproduced empty draft records consuming the target model's EPLB history ([issue #48603](https://github.com/sgl-project/sglang/issues/48603)) and supplied the recorder-lifecycle fix in [#47922](https://github.com/sgl-project/sglang/pull/47922); the community integrated that core fix in [#48751](https://github.com/sgl-project/sglang/pull/48751), authored by ch-wan and merged on 2026-11-06.
+**Measured EPLB OFF → ON:** output throughput **2,648.89 → 3,627.05 token/s (+36.93%)** and mean E2E **50.49 → 36.39 s** in the documented DeepSeek-V4-Flash W8A8 PD copying workload. Mean TPOT increased from **8.85 to 10.52 ms/token**.
 
 <details>
-<summary>🔬 What made this bug subtle?</summary>
+<summary>🔬 Experiment setup, acceptance counters & latency</summary>
 
-Draft execution can use `TARGET_VERIFY`, so the guard must follow the runner's role. Disabling counting hooks inside the model still lets the outer recorder reset counters and append an empty observation.
+The paired run at `08865d168` used Ascend 910C: 16 physical cards / 32 chips across P+D, TP16/EP16/attention-DP16 per endpoint, DSpark gamma 5 / verify 6, 16,384 input and 1,024 output tokens, concurrency 128, prefix/index caches disabled, and matched actual KV limits.
 
-The fix has two parts: disable recording **before** entering the forward context, and make an already-disabled recorder skip reset, collection, and append. The issue includes a current-main reproducer and published 16-rank service records.
+Throughput counts received generated tokens in the common **[60, 360) s** window. Latencies use successful requests started inside that window.
+
+| Metric | EPLB OFF | EPLB ON |
+| --- | ---: | ---: |
+| Output throughput, token/s | 2,648.89 | 3,627.05 |
+| Mean TTFT, s | 41.43 | 25.63 |
+| Mean TPOT, ms/token | 8.85 | 10.52 |
+| Mean E2E, s | 50.49 | 36.39 |
+| Acceptance length, tokens/verify | 5.988304 | 5.988304 |
+| Measured strict draft acceptance | 100% | 100% |
+| Correct / proposed draft tokens, latency cohort | 658,350 / 658,350 | 908,010 / 908,010 |
+| Full-run successful / failed requests | 3,072 / 0 | 3,072 / 0 |
+
+All 3,072 paired generated texts match. ON feeds a larger observed decode batch, so the throughput gain comes with a per-request TPOT trade-off. These numbers compare EPLB OFF and ON; the PR separately reports old-ND versus physical-byte migration costs.
 
 </details>
 
-**Open follow-up:** [#48835 · Preserve arch35 expert storage during migration](https://github.com/sgl-project/sglang/pull/48835).
+<details>
+<summary>🧩 The EPLB contribution trail</summary>
 
-## 🔧 Selected patches
+- **Initial support:** [#47574](https://github.com/sgl-project/sglang/pull/47574), merged on 2026-11-02, brought dynamic expert balancing to Ascend.
+- **Bug discovery and original fix:** I reported draft empty records consuming the target window in [issue #48603](https://github.com/sgl-project/sglang/issues/48603) and supplied the lifecycle fix in [#47922](https://github.com/sgl-project/sglang/pull/47922). The community integrated the core fix in ch-wan's [#48751](https://github.com/sgl-project/sglang/pull/48751), merged on 2026-11-06.
+
+</details>
+
+## ✅ More merged work
+
+| Work | Contribution | Upstream |
+| --- | --- | --- |
+| A3 prefill/decode state | Fixed C4 handoff between different P/D ring sizes with row-sized registration and peer-local addressing. | [SGLang #47934](https://github.com/sgl-project/sglang/pull/47934) · Nov 12 |
+| DeepSeek-V4.1 operators | Co-developed seven DSL compute/metadata APIs with ClownBin: dispatch contracts, Torch references, tests and K-tail storage correction. | [kernel #964](https://github.com/sgl-project/sgl-kernel-npu/pull/964) · Nov 9 |
+| Operator API integration | Added explicit `_dsl` names across wrappers, registry, tests and bilingual docs while preserving the implementation logic. | [kernel #1012](https://github.com/sgl-project/sgl-kernel-npu/pull/1012) · Nov 10 |
+
+## 🔧 Open patches
 
 | Area | Engineering change | PR |
 | --- | --- | --- |
-| PD state transfer | Peer-local C4 rows and empty state components across PP stages | [#47934](https://github.com/sgl-project/sglang/pull/47934) / [#47937](https://github.com/sgl-project/sglang/pull/47937) / [#47938](https://github.com/sgl-project/sglang/pull/47938) |
+| PD state | Preserve empty components across PP stages; use request-local C4 rows on AMD | [#47937](https://github.com/sgl-project/sglang/pull/47937) / [#47938](https://github.com/sgl-project/sglang/pull/47938) |
+| Gateway lifecycle | Cancel pending prefill on early decode failure | [#49792](https://github.com/sgl-project/sglang/pull/49792) |
 | Decode memory | Bound DeepSeek-V4 SWA storage by request slots | [#47740](https://github.com/sgl-project/sglang/pull/47740) |
 | Numerical precision | Preserve Softplus accuracy in GDN gating and decode | [kernel #933](https://github.com/sgl-project/sgl-kernel-npu/pull/933) |
 | Sparse attention | Exclude padded lanes from non-power-of-two TopK reduction | [kernel #935](https://github.com/sgl-project/sgl-kernel-npu/pull/935) |
-| Quantization | Preserve AWQ fallback dtype and correct GPTQ zero-point offsets | [#47639](https://github.com/sgl-project/sglang/pull/47639) / [#47637](https://github.com/sgl-project/sglang/pull/47637) |
-| Benchmark timing | Record PD decode handoff time for non-streaming requests | [#47772](https://github.com/sgl-project/sglang/pull/47772) |
+| Quantization | Preserve AWQ fallback dtype; correct GPTQ zero-point offsets | [#47639](https://github.com/sgl-project/sglang/pull/47639) / [#47637](https://github.com/sgl-project/sglang/pull/47637) |
+| Benchmark timing | Record non-streaming PD decode handoff time | [#47772](https://github.com/sgl-project/sglang/pull/47772) |
 
-<sub>Selected patches and the arch35 follow-up were Open when checked on 2026-11-09. Follow each PR for its latest status.</sub>
+<sub>Open status checked on 2026-11-14. Each link carries the latest upstream state.</sub>
 
 <details>
 <summary>📦 More sglang contributions (12 PRs)</summary>
@@ -100,20 +125,22 @@ The fix has two parts: disable recording **before** entering the forward context
 
 </details>
 
-[More authored upstream PRs](https://github.com/pulls?q=is%3Apr+author%3AAkiYangDev+org%3Asgl-project+is%3Aopen)
-
-## 🐋 Projects & writing
+## 🐋 Projects & engineering notes
 
 ### [mini-DeepInfer](https://github.com/AkiYangDev/mini-deepinfer)
 
-A runnable teaching inference engine built around DeepInfer's execution design: scheduling, batching, KV-slot reclamation, execution across iterations, and speculative decoding. Start on CPU, then generate text with real Qwen3.5 weights on Ascend 910C.
+A runnable teaching inference engine built around DeepInfer's execution design: scheduling, batching, KV-slot reclamation and speculative decoding, from CPU examples to real Qwen3.5 generation on Ascend 910C.
 
 ### [LLM Inference Notes](https://akiyangdev.github.io/llm-inference-notes/)
 
-Chinese engineering articles connecting SGLang source code with DeepSeek Attention / MoE / DSpark, distributed state ownership, quantization, profiling, and measured tuning results.
+Chinese articles connecting upstream code, reproducible examples and measured behavior. Recent writing:
+
+- [Physical-storage EPLB migration](https://akiyangdev.github.io/llm-inference-notes/articles/performance/ascend-eplb-physical-storage-migration/) — padding, scratch, lifetime and update costs.
+- [Graph capture and tensor storage](https://akiyangdev.github.io/llm-inference-notes/articles/performance/graph-capture-tensor-storage/) — changing weights while preserving captured addresses.
+- [Proving expert migration correct](https://akiyangdev.github.io/llm-inference-notes/articles/performance/eplb-weight-migration-correctness/) — bytes, quantization scales, mapping and fixed-state forward checks.
 
 <p align="center">
   <img src="assets/whale-smile.png" width="70" alt="A cheerful chibi DeepSeek whale girl" /><br />
-  <b>Always happy to talk inference, kernels, and a well-reproduced bug 🐋</b><br />
+  <b>Inference, kernels, and a well-reproduced bug. Let's talk 🐋</b><br />
   <sub>DeepSeek whale girl · Community fan art</sub>
 </p>
